@@ -1,8 +1,13 @@
 {% set route = app.request.attributes.get('_route')|default('') %}
-<div class="admin-header">
-    <h1>{{ is_granted('ROLE_ADMIN') ? 'Admin Panel' : (is_granted('ROLE_STAFF') ? 'Staff Panel' : 'My Account') }}</h1>
+<aside class="panel-sidebar">
+    <h1 class="panel-title">{{ is_granted('ROLE_ADMIN') ? 'Admin Panel' : (is_granted('ROLE_STAFF') ? 'Staff Panel' : 'My Account') }}</h1>
 
-    <nav class="admin-nav" aria-label="Main menu">
+    <div class="panel-whoami">
+        <span>{{ app.user.userIdentifier }}</span>
+        <span class="role-badge {{ app.user.role }}">{{ app.user.role }}</span>
+    </div>
+
+    <nav class="panel-menu" aria-label="Main menu">
         {% if is_granted('ROLE_ADMIN') %}
             <a href="{{ path('app_admin_dashboard') }}" class="{{ route == 'app_admin_dashboard' ? 'active' : '' }}">Dashboard</a>
             <a href="{{ path('app_admin_user_index') }}" class="{{ route starts with 'app_admin_user' ? 'active' : '' }}">Users</a>
@@ -12,7 +17,6 @@
         {% endif %}
         <a href="{{ path('app_account') }}" class="{{ route starts with 'app_account' ? 'active' : '' }}">Profile</a>
         <a href="{{ path('app_storefront') }}">Storefront</a>
-        <a href="{{ path('app_logout') }}">Log Out</a>
+        <a href="{{ path('app_logout') }}" class="panel-logout">Log Out</a>
     </nav>
-</div>
-
+</aside>

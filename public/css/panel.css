@@ -1,9 +1,15 @@
-.admin-header { flex-wrap: wrap; gap: 12px; }
-.admin-nav { display: flex; flex-wrap: wrap; gap: 8px; }
-.admin-nav a { margin-left: 0; }
-.admin-nav a.active { border-color: goldenrod; color: goldenrod; }
-.admin-content { max-width: 1200px; }
-.panel-whoami { padding: 8px 40px; font-size: 13px; color: rgb(170, 170, 170); background: rgb(18, 18, 18); }
+
+.panel-layout { display: flex; min-height: 100vh; }
+.panel-sidebar { width: 240px; flex: none; box-sizing: border-box; position: sticky; top: 0; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding: 28px 18px; background: black; border-right: 1px solid goldenrod; }
+.panel-title { margin: 0; color: goldenrod; font-size: 24px; }
+.panel-whoami { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 14px; color: rgb(190, 190, 190); padding-bottom: 16px; border-bottom: 1px solid rgb(60, 60, 60); }
+.panel-menu { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.panel-menu a { color: white; text-decoration: none; font-size: 14px; padding: 10px 14px; border: 1px solid rgb(90, 90, 90); transition: border-color 0.15s ease, color 0.15s ease; }
+.panel-menu a:hover { border-color: goldenrod; color: goldenrod; }
+.panel-menu a.active { border-color: goldenrod; color: goldenrod; background: rgba(218, 165, 32, 0.12); }
+.panel-menu a.panel-logout { margin-top: auto; text-align: center; }
+.panel-main { flex: 1; min-width: 0; }
+.admin-content { max-width: 1400px; margin: 40px auto; padding: 0 28px; }
 
 .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; margin-top: 20px; }
 .stat-card { display: flex; flex-direction: column; gap: 6px; padding: 22px; background: black; border: 1px solid rgb(60, 60, 60); color: white; text-decoration: none; }
@@ -40,11 +46,15 @@ a.stat-card:hover { border-color: goldenrod; }
 .profile-list dd { margin: 0; }
 
 @media (max-width: 760px) {
-    .admin-header { padding: 14px 16px; }
-    .panel-whoami { padding: 8px 16px; }
+    .panel-layout { flex-direction: column; }
+    .panel-sidebar { width: 100%; height: auto; position: static; padding: 14px 16px; border-right: 0; border-bottom: 1px solid goldenrod; gap: 10px; }
+    .panel-whoami { padding-bottom: 10px; }
+    .panel-menu { flex-direction: row; flex-wrap: wrap; flex: none; }
+    .panel-menu a.panel-logout { margin-top: 0; }
     .admin-content { margin: 20px auto; padding: 0 12px; }
     .panel-toolbar, .panel-filter { flex-direction: column; align-items: stretch; }
     .panel-filter .stock-form-field input, .panel-filter .stock-form-field select { width: 100%; box-sizing: border-box; }
+    .table-scroll .responsive-table { min-width: 0; }
     .responsive-table thead { display: none; }
     .responsive-table, .responsive-table tbody, .responsive-table tr, .responsive-table td { display: block; width: 100%; box-sizing: border-box; }
     .responsive-table tr { border: 1px solid rgb(60, 60, 60); margin-bottom: 12px; padding: 6px 10px; }
