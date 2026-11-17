@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% block viewport %}<meta name="viewport" content="width=device-width, initial-scale=1">{% endblock %}
+    {% block head_extra %}{% endblock %}
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}?v=8">
+    {% include 'partials/_fonts.html.twig' %}
+
+    <title>{% block title %}John Kharl Caburog Apparel{% endblock %}</title>
+</head>
+<body{% block body_attr %}{% endblock %}>
+{% block body %}{% endblock %}
+{% block javascripts %}{% endblock %}
+</body>
+</html>

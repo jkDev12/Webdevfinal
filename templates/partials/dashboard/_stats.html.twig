@@ -1,0 +1,19 @@
+<h2 class="admin-section-title">Overview</h2>
+<div class="stat-grid">
+    <a class="stat-card" href="{{ path('app_admin_user_index') }}">
+        <span class="stat-value">{{ stats.users }}</span>
+        <span class="stat-label">Total users</span>
+    </a>
+    <a class="stat-card" href="{{ path('app_admin_user_index', {role: 'staff'}) }}">
+        <span class="stat-value">{{ stats.staff }}</span>
+        <span class="stat-label">Total staff</span>
+    </a>
+    <a class="stat-card" href="{{ path('app_product_index') }}">
+        <span class="stat-value">{{ stats.records }}</span>
+        <span class="stat-label">Total records (products)</span>
+    </a>
+    <div class="stat-card">
+        <span class="stat-value">{{ stats.orders }}</span>
+        <span class="stat-label">Total orders</span>
+    </div>
+</div>

@@ -1,0 +1,54 @@
+.admin-header { flex-wrap: wrap; gap: 12px; }
+.admin-nav { display: flex; flex-wrap: wrap; gap: 8px; }
+.admin-nav a { margin-left: 0; }
+.admin-nav a.active { border-color: goldenrod; color: goldenrod; }
+.admin-content { max-width: 1200px; }
+.panel-whoami { padding: 8px 40px; font-size: 13px; color: rgb(170, 170, 170); background: rgb(18, 18, 18); }
+
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; margin-top: 20px; }
+.stat-card { display: flex; flex-direction: column; gap: 6px; padding: 22px; background: black; border: 1px solid rgb(60, 60, 60); color: white; text-decoration: none; }
+a.stat-card:hover { border-color: goldenrod; }
+.stat-value { font-size: 38px; color: goldenrod; }
+.stat-label { font-size: 13px; color: rgb(180, 180, 180); }
+
+.role-badge { display: inline-block; padding: 3px 10px; font-size: 12px; border: 1px solid rgb(120, 120, 120); text-transform: capitalize; }
+.role-badge.admin { border-color: goldenrod; color: goldenrod; }
+.role-badge.staff { border-color: rgb(90, 140, 220); color: rgb(170, 200, 240); }
+
+.panel-toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; margin: 20px 0 10px; }
+.panel-filter { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; }
+.panel-filter .stock-form-field input,
+.panel-filter .stock-form-field select { min-width: 160px; }
+.panel-btn { display: inline-block; background: goldenrod; color: black; padding: 9px 16px; text-decoration: none; font-size: 14px; border: 0; cursor: pointer; }
+.panel-btn:hover { background: rgb(240, 190, 60); }
+.panel-link { color: rgb(190, 190, 190); font-size: 14px; }
+.panel-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.panel-actions form { margin: 0; }
+.panel-action-link { text-decoration: none; display: inline-block; }
+.panel-count { color: rgb(150, 150, 150); font-size: 13px; }
+.panel-hint { color: rgb(150, 150, 150); font-size: 12px; margin: 0; }
+.panel-form { flex-direction: column; align-items: stretch; max-width: 520px; }
+.panel-field { display: flex; flex-direction: column; gap: 6px; }
+.panel-field input, .panel-field select { width: 100%; box-sizing: border-box; }
+.panel-field-error, .admin-error { color: rgb(240, 160, 160); font-size: 13px; }
+.panel-check { flex-direction: row; align-items: center; gap: 8px; }
+.panel-check input { width: auto; }
+.product-thumb { width: 48px; height: 48px; object-fit: cover; border: 1px solid rgb(60, 60, 60); }
+.product-thumb-large { width: 120px; height: 120px; }
+.profile-list { display: grid; grid-template-columns: max-content 1fr; gap: 10px 24px; margin-top: 20px; }
+.profile-list dt { color: rgb(170, 170, 170); }
+.profile-list dd { margin: 0; }
+
+@media (max-width: 760px) {
+    .admin-header { padding: 14px 16px; }
+    .panel-whoami { padding: 8px 16px; }
+    .admin-content { margin: 20px auto; padding: 0 12px; }
+    .panel-toolbar, .panel-filter { flex-direction: column; align-items: stretch; }
+    .panel-filter .stock-form-field input, .panel-filter .stock-form-field select { width: 100%; box-sizing: border-box; }
+    .responsive-table thead { display: none; }
+    .responsive-table, .responsive-table tbody, .responsive-table tr, .responsive-table td { display: block; width: 100%; box-sizing: border-box; }
+    .responsive-table tr { border: 1px solid rgb(60, 60, 60); margin-bottom: 12px; padding: 6px 10px; }
+    .responsive-table td { display: flex; justify-content: space-between; gap: 12px; border: 0; padding: 6px 0; text-align: right; }
+    .responsive-table td::before { content: attr(data-label); color: goldenrod; text-align: left; }
+    .profile-list { grid-template-columns: 1fr; gap: 4px; }
+}

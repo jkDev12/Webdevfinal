@@ -1,0 +1,22 @@
+<h2 class="admin-section-title">Current Stock</h2>
+<table class="admin-table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Price</th>
+            {% for size in sizes %}<th>{{ size }}</th>{% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.price|price }}</td>
+                {% for size in sizes %}
+                    {% set qty = product.stockFor(size) %}
+                    <td class="{{ qty == 0 ? 'stock-out' : (qty <= 3 ? 'stock-low' : '') }}">{{ qty }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,57 @@
+<h2 class="admin-section-title">Recent Orders</h2>
+<div class="table-scroll">
+<table class="admin-table">
+    <thead>
+        <tr>
+            <th>#</th><th>Customer</th><th>Product</th><th>Size</th><th>Qty</th>
+            <th>Payment</th><th>Status</th><th>Shipping to</th><th>Receipt</th><th>Placed</th><th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+            {% set isPaid = order.paid %}
+            {% set isCancelled = order.cancelled %}
+            <tr class="{{ isCancelled ? 'order-cancelled' : '' }}">
+                <td>{{ order.id }}</td>
+                <td>{{ order.user.username }}</td>
+                <td>{{ order.product.name }}</td>
+                <td>{{ order.size }}</td>
+                <td>{{ order.quantity }}</td>
+                <td>
+                    <span class="payment-badge {{ isPaid ? 'paid' : 'pending' }}">
+                        {{ order.paymentMethod == 'credit_card' ? 'Card' ~ (order.cardLast4 ? ' ····' ~ order.cardLast4 : '') : 'COD' }}
+                        · {{ isPaid ? 'Paid' : 'Pending' }}
+                    </span>
+                </td>
+                <td>
+                    <span class="status-badge {{ isCancelled ? 'cancelled' : 'active' }}">{{ isCancelled ? 'Cancelled' : 'Active' }}</span>
+                </td>
+                <td class="shipping-cell">
+                    <strong>{{ order.shippingName }}</strong><br>
+                    {{ order.shippingAddress }}, {{ order.shippingCity }} {{ order.shippingPostalCode }}<br>
+                    {{ order.shippingPhone }}
+                </td>
+                <td>{{ order.receiptEmail }}</td>
+                <td>{{ order.createdAt|date('Y-m-d H:i:s') }}</td>
+                <td class="order-actions">
+                    {% if not isCancelled and not isPaid %}
+                        <form method="post" class="mark-paid-form" action="{{ path('app_admin_order_paid', {id: order.id}) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token('dashboard') }}">
+                            <button type="submit" class="mark-paid-btn">Mark Paid</button>
+                        </form>
+                    {% endif %}
+                    {% if not isCancelled %}
+                        <form method="post" class="cancel-order-form" action="{{ path('app_admin_order_cancel', {id: order.id}) }}" onsubmit="return confirm('Cancel order #{{ order.id }}? This restores its stock.');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token('dashboard') }}">
+                            <button type="submit" class="cancel-order-btn">Cancel</button>
+                        </form>
+                    {% endif %}
+                    {% if isCancelled and isPaid %}&mdash;{% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="11">No orders yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>

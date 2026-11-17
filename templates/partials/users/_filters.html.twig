@@ -1,0 +1,20 @@
+<div class="panel-toolbar">
+    <form method="get" action="{{ path('app_admin_user_index') }}" class="panel-filter">
+        <div class="stock-form-field">
+            <label for="user_q">Search</label>
+            <input type="search" id="user_q" name="q" value="{{ filters.q }}" placeholder="Name or email">
+        </div>
+        <div class="stock-form-field">
+            <label for="user_role">Role</label>
+            <select id="user_role" name="role">
+                <option value="">All roles</option>
+                {% for role in ['admin', 'staff', 'customer'] %}
+                    <option value="{{ role }}" {{ filters.role == role ? 'selected' : '' }}>{{ role|capitalize }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="stock-form-submit">Filter</button>
+        {% if filters.q or filters.role %}<a class="panel-link" href="{{ path('app_admin_user_index') }}">Clear</a>{% endif %}
+    </form>
+    <a class="panel-btn" href="{{ path('app_admin_user_new') }}">+ Create account</a>
+</div>

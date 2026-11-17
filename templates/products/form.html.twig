@@ -1,0 +1,35 @@
+{% extends 'panel/base.html.twig' %}
+
+{% block title %}{{ title }} — John Kharl Caburog Apparel{% endblock %}
+
+{% block content %}
+    <h2 class="admin-section-title">{{ title }}{% if product %}: {{ product.name }}{% endif %}</h2>
+
+    {% include 'partials/form/_global_errors.html.twig' with {form: form} %}
+
+    {{ form_start(form, {attr: {class: 'stock-form panel-form', novalidate: 'novalidate'}}) }}
+        {% include 'partials/form/_field.html.twig' with {field: form.name} %}
+        {% include 'partials/form/_field.html.twig' with {field: form.price} %}
+
+        {% if product %}
+            <div class="stock-form-field"><label>Current photo</label><img class="product-thumb product-thumb-large" src="{{ asset(product.image) }}" alt=""></div>
+        {% endif %}
+        {% include 'partials/form/_field.html.twig' with {field: form.image} %}
+
+        <fieldset class="stock-form-field stock-form-starting">
+            <legend>Stock per size</legend>
+            {% for size in ['XS', 'S', 'M', 'L', 'XL'] %}
+                <label class="starting-stock-field">
+                    {{ size }}
+                    {{ form_widget(form.stock[size]) }}
+                </label>
+            {% endfor %}
+            {% for error in form.stock.vars.errors %}<span class="panel-field-error">{{ error.message }}</span>{% endfor %}
+        </fieldset>
+
+        <div class="panel-actions">
+            <button type="submit" class="stock-form-submit">Save</button>
+            <a class="panel-link" href="{{ path('app_product_index') }}">Cancel</a>
+        </div>
+    {{ form_end(form) }}
+{% endblock %}

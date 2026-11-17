@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Access denied — John Kharl Caburog Apparel{% endblock %}
+{% block body_attr %} class="auth-body"{% endblock %}
+
+{% block body %}
+    <div class="auth-page">
+        <div class="auth-card">
+            <h1 class="auth-brand">John Kharl Caburog Apparel</h1>
+            <h2 class="auth-title">Access denied</h2>
+            <p class="auth-error">You don't have permission to open this page.</p>
+            <p class="auth-link"><a href="/">Back to the store</a> · <a href="/login">Log in with another account</a></p>
+        </div>
+    </div>
+{% endblock %}

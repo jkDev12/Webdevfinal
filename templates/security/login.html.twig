@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log In — John Kharl Caburog Apparel{% endblock %}
+{% block body_attr %} class="auth-body"{% endblock %}
+
+{% block body %}
+    <div class="auth-page">
+        <div class="auth-card">
+            {% include 'partials/auth/_card_header.html.twig' with {title: 'Log In'} %}
+            {% include 'partials/flash.html.twig' %}
+
+            {% if error %}
+                <p class="auth-error">{{ error }}</p>
+            {% endif %}
+
+            <form method="post" class="auth-form" action="{{ path('app_login') }}" novalidate>
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('login_form') }}">
+
+                <label class="auth-label" for="username">Username or email</label>
+                <input class="auth-input" type="text" id="username" name="username"
+                       value="{{ last_username }}" required autofocus autocomplete="username">
+
+                <label class="auth-label" for="password">Password</label>
+                <input class="auth-input" type="password" id="password" name="password"
+                       required autocomplete="current-password">
+
+                <button type="submit" name="login" class="auth-button">LOG IN</button>
+            </form>
+
+            <p class="auth-link">New here? <a href="{{ path('app_register') }}">Create an account</a></p>
+        </div>
+    </div>
+{% endblock %}

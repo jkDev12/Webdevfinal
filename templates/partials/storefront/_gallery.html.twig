@@ -1,0 +1,14 @@
+<div id="gallery" class="gallery-section">
+    {% for product in products %}
+    <div id="clothes{{ product.id }}" class="clothes">
+      <div class="product-title">{{ product.name }}</div>
+      <img class="product-image" src="{{ asset(product.image) }}" alt="{{ product.name }}">
+      <div class="product-price">{{ product.price|price }}</div>
+      {% if product.inStock %}
+        <button type="button" class="buy-button" data-product-id="{{ product.id }}">Buy now</button>
+      {% else %}
+        <button type="button" class="buy-button" disabled>Sold out</button>
+      {% endif %}
+    </div>
+    {% endfor %}
+</div>

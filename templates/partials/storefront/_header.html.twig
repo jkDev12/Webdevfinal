@@ -1,0 +1,50 @@
+<div class="header">
+
+    <div class="header-left-section">
+
+        <div class="logo-space">
+            <img class="logo" src="{{ asset('images/logo.png') }}" alt="Logo">
+        </div>
+
+        <div class="header-brand">
+            <h2>John Kharl Caburog Apparel</h2>
+        </div>
+
+    </div>
+
+    <div class="header-right-section">
+
+        <div class="top-buttons">
+            <a class="menu-button" href="#home">HOME</a>
+        </div>
+
+        <div class="top-buttons">
+            <a class="menu-button" href="#gallery">GALLERY</a>
+        </div>
+
+        <div class="top-buttons">
+            <a class="menu-button" href="#about">ABOUT</a>
+        </div>
+
+        <div class="top-buttons">
+            <a class="menu-button" href="#contact">CONTACT</a>
+        </div>
+
+        {% if is_granted('ROLE_ADMIN') %}
+        <div class="top-buttons">
+            <a class="menu-button" href="{{ path('app_admin_dashboard') }}">ADMIN</a>
+        </div>
+        {% elseif is_granted('ROLE_STAFF') %}
+        <div class="top-buttons">
+            <a class="menu-button" href="{{ path('app_product_index') }}">STAFF</a>
+        </div>
+        {% endif %}
+
+
+        <div class="top-buttons">
+            <a class="login-button logout-button" href="{{ path('app_logout') }}">LOG OUT</a>
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}John Kharl Caburog Apparel{% endblock %}
+{% block viewport %}<meta name="viewport" content="width=1920">{% endblock %}
+{% block head_extra %}<meta name="csrf-token" content="{{ csrf_token('checkout') }}">{% endblock %}
+
+{% block body %}
+    <div class="page-wrapper">
+        {% include 'partials/storefront/_header.html.twig' %}
+        {% include 'partials/storefront/_hero.html.twig' %}
+        {% include 'partials/storefront/_gallery.html.twig' with {products: products} %}
+        {% include 'partials/storefront/_about.html.twig' %}
+        {% include 'partials/storefront/_why_us.html.twig' %}
+        {% include 'partials/storefront/_feedback.html.twig' %}
+        {% include 'partials/storefront/_footer.html.twig' %}
+    </div>
+
+    {% include 'partials/storefront/_buy_modal.html.twig' %}
+
+    {% for message in app.flashes('success') %}
+        <div id="flashToast" class="flash-toast">{{ message }}</div>
+    {% endfor %}
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        window.PRODUCTS = {{ products_json|raw }};
+    </script>
+    <script src="{{ asset('js/main.js') }}"></script>
+{% endblock %}

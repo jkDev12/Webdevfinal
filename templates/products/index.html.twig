@@ -1,0 +1,10 @@
+{% extends 'panel/base.html.twig' %}
+
+{% block title %}Products — John Kharl Caburog Apparel{% endblock %}
+
+{% block content %}
+    <h2 class="admin-section-title">Product Records</h2>
+
+    {% include 'partials/products/_filters.html.twig' with {filters: filters, creators: creators} %}
+    {% include 'partials/products/_table.html.twig' with {products: products} %}
+{% endblock %}

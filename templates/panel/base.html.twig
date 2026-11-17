@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block head_extra %}<link rel="stylesheet" href="{{ asset('css/panel.css') }}">{% endblock %}
+{% block body_attr %} class="admin-body"{% endblock %}
+
+{% block body %}
+    {% include 'partials/panel/_header.html.twig' %}
+
+    <div class="admin-content">
+        {% include 'partials/flash.html.twig' %}
+
+        {% block content %}{% endblock %}
+    </div>
+{% endblock %}

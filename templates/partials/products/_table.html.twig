@@ -1,0 +1,42 @@
+<div class="table-scroll">
+<table class="admin-table responsive-table">
+    <thead>
+        <tr>
+            <th>Photo</th><th>Name</th><th>Price</th>
+            {% for size in ['XS', 'S', 'M', 'L', 'XL'] %}<th>{{ size }}</th>{% endfor %}
+            <th>Created by</th><th>Created</th><th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in products %}
+            <tr>
+                <td data-label="Photo"><img class="product-thumb" src="{{ asset(product.image) }}" alt=""></td>
+                <td data-label="Name">{{ product.name }}</td>
+                <td data-label="Price">{{ product.price|price }}</td>
+                {% for size in ['XS', 'S', 'M', 'L', 'XL'] %}
+                    {% set qty = product.stockFor(size) %}
+                    <td data-label="{{ size }}" class="{{ qty == 0 ? 'stock-out' : (qty <= 3 ? 'stock-low' : '') }}">{{ qty }}</td>
+                {% endfor %}
+                <td data-label="Created by">{{ product.createdBy ? product.createdBy.username : '—' }}</td>
+                <td data-label="Created">{{ product.createdAt|date('Y-m-d') }}</td>
+                <td data-label="Actions" class="panel-actions">
+                    {% if is_granted('PRODUCT_EDIT', product) %}
+                        <a class="mark-paid-btn panel-action-link" href="{{ path('app_product_edit', {id: product.id}) }}">Edit</a>
+                    {% endif %}
+                    {% if is_granted('PRODUCT_DELETE', product) %}
+                        <form method="post" class="cancel-order-form" action="{{ path('app_product_delete', {id: product.id}) }}"
+                              onsubmit="return confirm('Delete &quot;{{ product.name|e('js') }}&quot;? This cannot be undone.');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token('delete_product_' ~ product.id) }}">
+                            <button type="submit" class="cancel-order-btn">Delete</button>
+                        </form>
+                    {% endif %}
+                    {% if not is_granted('PRODUCT_EDIT', product) %}<span class="panel-hint">View only</span>{% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="11">No products match.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+<p class="panel-count">{{ products|length }} record(s) shown</p>

@@ -1,0 +1,10 @@
+{% extends 'panel/base.html.twig' %}
+
+{% block title %}Users — John Kharl Caburog Apparel{% endblock %}
+
+{% block content %}
+    <h2 class="admin-section-title">User &amp; Staff Accounts</h2>
+
+    {% include 'partials/users/_filters.html.twig' with {filters: filters} %}
+    {% include 'partials/users/_table.html.twig' with {users: users} %}
+{% endblock %}

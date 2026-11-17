@@ -1,0 +1,29 @@
+<div class="panel-toolbar">
+    <form method="get" action="{{ path('app_product_index') }}" class="panel-filter">
+        <div class="stock-form-field">
+            <label for="prod_q">Search</label>
+            <input type="search" id="prod_q" name="q" value="{{ filters.q }}" placeholder="Product name">
+        </div>
+        <div class="stock-form-field">
+            <label for="prod_creator">Created by</label>
+            <select id="prod_creator" name="creator">
+                <option value="">Everyone</option>
+                <option value="mine" {{ filters.creator == 'mine' ? 'selected' : '' }}>Me</option>
+                {% for creator in creators %}
+                    <option value="{{ creator.id }}" {{ filters.creator == (creator.id ~ '') ? 'selected' : '' }}>{{ creator.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="stock-form-field">
+            <label for="prod_availability">Availability</label>
+            <select id="prod_availability" name="availability">
+                <option value="">Any</option>
+                <option value="in_stock" {{ filters.availability == 'in_stock' ? 'selected' : '' }}>In stock</option>
+                <option value="sold_out" {{ filters.availability == 'sold_out' ? 'selected' : '' }}>Sold out</option>
+            </select>
+        </div>
+        <button type="submit" class="stock-form-submit">Filter</button>
+        {% if filters.q or filters.creator or filters.availability %}<a class="panel-link" href="{{ path('app_product_index') }}">Clear</a>{% endif %}
+    </form>
+    <a class="panel-btn" href="{{ path('app_product_new') }}">+ Add product</a>
+</div>

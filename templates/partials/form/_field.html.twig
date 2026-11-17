@@ -1,0 +1,7 @@
+<div class="stock-form-field panel-field">
+    {{ form_label(field) }}
+    {{ form_widget(field) }}
+    {% for error in field.vars.errors %}
+        <span class="panel-field-error">{{ error.message }}</span>
+    {% endfor %}
+</div>

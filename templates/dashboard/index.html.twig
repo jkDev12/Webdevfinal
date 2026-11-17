@@ -1,0 +1,30 @@
+{% extends 'panel/base.html.twig' %}
+
+{% block title %}Admin Dashboard — John Kharl Caburog Apparel{% endblock %}
+
+{% block content %}
+    {% include 'partials/dashboard/_stats.html.twig' with {stats: stats} %}
+
+    {% include 'partials/dashboard/_stock_table.html.twig' %}
+
+    {% include 'partials/dashboard/_stock_form.html.twig' with {
+        title: 'Add Stock',
+        action: 'add_stock',
+        form_action: path('app_admin_stock_add'),
+        quantity_label: 'Quantity to add',
+        default_qty: 10,
+        button_label: 'Add Stock'
+    } %}
+
+    {% include 'partials/dashboard/_stock_form.html.twig' with {
+        title: 'Reduce Stock',
+        action: 'reduce_stock',
+        form_action: path('app_admin_stock_reduce'),
+        quantity_label: 'Quantity to remove',
+        default_qty: 1,
+        button_label: 'Reduce Stock',
+        remove: true
+    } %}
+
+    {% include 'partials/dashboard/_orders_table.html.twig' %}
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create Account — John Kharl Caburog Apparel{% endblock %}
+{% block body_attr %} class="auth-body"{% endblock %}
+
+{% block body %}
+    <div class="auth-page">
+        <div class="auth-card">
+            {% include 'partials/auth/_card_header.html.twig' with {title: 'Create Account'} %}
+
+            {% if error %}
+                <p class="auth-error">{{ error }}</p>
+            {% endif %}
+
+            {{ form_start(form, {attr: {class: 'auth-form', novalidate: 'novalidate'}}) }}
+
+                <label class="auth-label" for="username">Username</label>
+                {{ form_widget(form.username, {attr: {class: 'auth-input', autofocus: 'autofocus', autocomplete: 'username'}}) }}
+
+                <label class="auth-label" for="account_type">Account type</label>
+                {{ form_widget(form.account_type, {attr: {class: 'auth-input'}}) }}
+
+                <label class="auth-label" for="email">Email</label>
+                {{ form_widget(form.email, {attr: {class: 'auth-input', autocomplete: 'email'}}) }}
+
+                <label class="auth-label" for="password">Password</label>
+                {{ form_widget(form.password, {attr: {class: 'auth-input', autocomplete: 'new-password'}}) }}
+
+                <label class="auth-label" for="confirm_password">Confirm password</label>
+                {{ form_widget(form.confirm_password, {attr: {class: 'auth-input', autocomplete: 'new-password'}}) }}
+
+                <button type="submit" class="auth-button">CREATE ACCOUNT</button>
+            {{ form_end(form) }}
+
+            <p class="auth-link">Already have an account? <a href="{{ path('app_login') }}">Log in</a></p>
+        </div>
+    </div>
+{% endblock %}

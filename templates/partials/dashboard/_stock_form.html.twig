@@ -1,0 +1,27 @@
+<h2 class="admin-section-title">{{ title }}</h2>
+<form method="post" class="stock-form" action="{{ form_action }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token('dashboard') }}">
+
+    <div class="stock-form-field">
+        <label for="{{ action }}_product_id">Product</label>
+        <select id="{{ action }}_product_id" name="product_id" required>
+            {% for product in products %}
+                <option value="{{ product.id }}">{{ product.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="stock-form-field">
+        <label for="{{ action }}_size">Size</label>
+        <select id="{{ action }}_size" name="size" required>
+            {% for size in sizes %}<option value="{{ size }}">{{ size }}</option>{% endfor %}
+        </select>
+    </div>
+
+    <div class="stock-form-field">
+        <label for="{{ action }}_quantity">{{ quantity_label }}</label>
+        <input type="number" id="{{ action }}_quantity" name="quantity" min="1" value="{{ default_qty }}" required>
+    </div>
+
+    <button type="submit" name="{{ action }}" value="1" class="stock-form-submit{{ remove|default(false) ? ' stock-form-remove' : '' }}">{{ button_label }}</button>
+</form>

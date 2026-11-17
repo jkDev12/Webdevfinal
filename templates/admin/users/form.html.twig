@@ -1,0 +1,27 @@
+{% extends 'panel/base.html.twig' %}
+
+{% block title %}{{ title }} — John Kharl Caburog Apparel{% endblock %}
+
+{% block content %}
+    <h2 class="admin-section-title">{{ title }}{% if target %}: {{ target.username }}{% endif %}</h2>
+
+    {% include 'partials/form/_global_errors.html.twig' with {form: form} %}
+
+    {{ form_start(form, {attr: {class: 'stock-form panel-form', novalidate: 'novalidate'}}) }}
+        {% include 'partials/form/_field.html.twig' with {field: form.username} %}
+        {% include 'partials/form/_field.html.twig' with {field: form.email} %}
+        {% include 'partials/form/_field.html.twig' with {field: form.role} %}
+        {% include 'partials/form/_field.html.twig' with {field: form.password} %}
+        <div class="stock-form-field panel-check">
+            {{ form_widget(form.active) }} {{ form_label(form.active) }}
+        </div>
+        {% if form.role.vars.disabled %}
+            <p class="panel-hint">You are editing your own account, so your role and status are locked.</p>
+        {% endif %}
+
+        <div class="panel-actions">
+            <button type="submit" class="stock-form-submit">Save</button>
+            <a class="panel-link" href="{{ path('app_admin_user_index') }}">Cancel</a>
+        </div>
+    {{ form_end(form) }}
+{% endblock %}

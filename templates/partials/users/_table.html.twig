@@ -1,0 +1,35 @@
+<div class="table-scroll">
+<table class="admin-table responsive-table">
+    <thead>
+        <tr><th>Name / username</th><th>Email</th><th>Role</th><th>Status</th><th>Date created</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+            <tr>
+                <td data-label="Name">{{ user.username }}{% if user.id == app.user.id %} <em>(you)</em>{% endif %}</td>
+                <td data-label="Email">{{ user.email }}</td>
+                <td data-label="Role"><span class="role-badge {{ user.role }}">{{ user.role }}</span></td>
+                <td data-label="Status"><span class="status-badge {{ user.active ? 'active' : 'cancelled' }}">{{ user.active ? 'Active' : 'Disabled' }}</span></td>
+                <td data-label="Created">{{ user.createdAt|date('Y-m-d H:i') }}</td>
+                <td data-label="Actions" class="panel-actions">
+                    <a class="mark-paid-btn panel-action-link" href="{{ path('app_admin_user_edit', {id: user.id}) }}">Edit</a>
+                    {% if user.id != app.user.id %}
+                        <form method="post" class="mark-paid-form" action="{{ path('app_admin_user_toggle', {id: user.id}) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token('dashboard') }}">
+                            <button type="submit" class="mark-paid-btn">{{ user.active ? 'Disable' : 'Enable' }}</button>
+                        </form>
+                        <form method="post" class="cancel-order-form" action="{{ path('app_admin_user_delete', {id: user.id}) }}"
+                              onsubmit="return confirm('Delete the account &quot;{{ user.username|e('js') }}&quot;? This cannot be undone.');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token('dashboard') }}">
+                            <button type="submit" class="cancel-order-btn">Delete</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="6">No accounts match.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+<p class="panel-count">{{ users|length }} account(s) shown</p>
