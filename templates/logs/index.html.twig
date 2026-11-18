@@ -4,7 +4,7 @@
 
 {% block content %}
     <h2 class="admin-section-title">Activity Logs</h2>
-    <p class="panel-hint">Every stock posting and removal. {% if is_granted('ROLE_ADMIN') %}As an admin you can edit the note on any entry.{% else %}You can edit the note on your own entries only.{% endif %}</p>
+    <p class="panel-hint">Every stock posting and removal. {% if is_granted('ROLE_ADMIN') %}As an admin you can edit or delete any entry.{% else %}You can edit or delete your own entries only.{% endif %} Deleting an entry does not change stock levels.</p>
 
     {% include 'partials/stock_movements/_filters.html.twig' %}
     {% include 'partials/stock_movements/_table.html.twig' %}

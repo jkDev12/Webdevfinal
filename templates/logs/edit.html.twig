@@ -7,12 +7,16 @@
     <p class="panel-hint">
         {{ movement.add ? 'Posted' : 'Removed' }} {{ movement.quantity }} × {{ movement.size }} of “{{ movement.productName }}”
         ({{ movement.quantityBefore }} → {{ movement.quantityAfter }}) by {{ movement.actorName }}
-        on {{ movement.createdAt|date('Y-m-d H:i:s') }}. The note is the only part that can be changed.
+        on {{ movement.createdAt|date('Y-m-d H:i:s') }}.
+        Editing corrects this history entry only — it does not change the product's current stock (use Update Stock for that).
     </p>
 
     {% include 'partials/form/_global_errors.html.twig' with {form: form} %}
 
     {{ form_start(form, {attr: {class: 'stock-form panel-form'}}) }}
+        {% include 'partials/form/_field.html.twig' with {field: form.type} %}
+        {% include 'partials/form/_field.html.twig' with {field: form.size} %}
+        {% include 'partials/form/_field.html.twig' with {field: form.quantity} %}
         {% include 'partials/form/_field.html.twig' with {field: form.note} %}
 
         <div class="panel-actions">

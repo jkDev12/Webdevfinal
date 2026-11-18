@@ -9,17 +9,18 @@ use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 /**
- * Who may edit a log entry:
+ * Who may edit or delete a log entry:
  *  - staff: only entries they created themselves (not other staff, not admins);
  *  - admin: every entry, including those created by staff.
  */
 final class StockMovementVoter extends Voter
 {
     public const EDIT = 'LOG_EDIT';
+    public const DELETE = 'LOG_DELETE';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return self::EDIT === $attribute && $subject instanceof StockMovement;
+        return in_array($attribute, [self::EDIT, self::DELETE], true) && $subject instanceof StockMovement;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool

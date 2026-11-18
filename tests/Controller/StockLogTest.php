@@ -181,7 +181,7 @@ final class StockLogTest extends StoreTestCase
 
         $crawler = $this->client->request('GET', '/logs/'.$mine->getId().'/edit');
         self::assertResponseIsSuccessful();
-        $this->client->submit($crawler->selectButton('Save')->form(['log_note_form[note]' => 'Recount done']));
+        $this->client->submit($crawler->selectButton('Save')->form(['log_entry_form[note]' => 'Recount done']));
         self::assertResponseRedirects('/logs');
         $this->em->clear();
         self::assertSame('Recount done', $this->em->find(StockMovement::class, $mine->getId())->getNote());
@@ -189,7 +189,7 @@ final class StockLogTest extends StoreTestCase
         foreach ([$kims, $admins] as $other) {
             $this->client->request('GET', '/logs/'.$other->getId().'/edit');
             self::assertResponseStatusCodeSame(403);
-            $this->client->request('POST', '/logs/'.$other->getId().'/edit', ['log_note_form' => ['note' => 'hacked']]);
+            $this->client->request('POST', '/logs/'.$other->getId().'/edit', ['log_entry_form' => ['note' => 'hacked']]);
             self::assertResponseStatusCodeSame(403);
         }
         $this->em->clear();
@@ -211,7 +211,7 @@ final class StockLogTest extends StoreTestCase
         foreach ([$adminEntry->getId() => 'Admin note', $staffEntry->getId() => 'Checked by admin'] as $id => $note) {
             $crawler = $this->client->request('GET', '/logs/'.$id.'/edit');
             self::assertResponseIsSuccessful();
-            $this->client->submit($crawler->selectButton('Save')->form(['log_note_form[note]' => $note]));
+            $this->client->submit($crawler->selectButton('Save')->form(['log_entry_form[note]' => $note]));
             self::assertResponseRedirects('/logs');
             $this->em->clear();
             self::assertSame($note, $this->em->find(StockMovement::class, $id)->getNote());
@@ -225,5 +225,115 @@ final class StockLogTest extends StoreTestCase
         $this->client->request('GET', '/admin');
         self::assertSelectorNotExists('form[action$="/admin/stock/add"]');
         self::assertSelectorNotExists('form[action$="/admin/stock/reduce"]');
+    }
+
+    private function deleteLog(int $id): void
+    {
+        $crawler = $this->client->request('GET', '/logs');
+        $form = $crawler->filter('form[action$="/logs/'.$id.'/delete"]');
+        if (0 === $form->count()) {
+            $this->client->request('POST', '/logs/'.$id.'/delete');
+
+            return;
+        }
+        $this->client->submit($form->form());
+    }
+
+    public function testStaffCanDeleteOnlyTheirOwnLogEntries(): void
+    {
+        $boss = $this->createUser('boss', User::ROLE_ADMIN);
+        $sam = $this->createUser('sam', User::ROLE_STAFF);
+        $kim = $this->createUser('kim', User::ROLE_STAFF);
+        $mine = $this->movementBy($sam, 'Mine');
+        $kims = $this->movementBy($kim, 'Kims');
+        $admins = $this->movementBy($boss, 'Admins');
+        [$mineId, $kimsId, $adminsId] = [$mine->getId(), $kims->getId(), $admins->getId()];
+
+        $this->logIn('sam');
+        $crawler = $this->client->request('GET', '/logs');
+        self::assertSelectorNotExists('form[action$="/logs/'.$kimsId.'/delete"]');
+        self::assertSelectorNotExists('form[action$="/logs/'.$adminsId.'/delete"]');
+
+        $this->client->request('POST', '/logs/'.$kimsId.'/delete');
+        self::assertResponseStatusCodeSame(403);
+        $this->client->request('POST', '/logs/'.$adminsId.'/delete');
+        self::assertResponseStatusCodeSame(403);
+
+        $this->deleteLog($mineId);
+        self::assertResponseRedirects('/logs');
+        $this->em->clear();
+        self::assertNull($this->em->find(StockMovement::class, $mineId));
+        self::assertNotNull($this->em->find(StockMovement::class, $kimsId));
+        self::assertNotNull($this->em->find(StockMovement::class, $adminsId));
+    }
+
+    public function testAdminCanDeleteAnyLogEntryAndStockIsUntouched(): void
+    {
+        $this->createUser('boss', User::ROLE_ADMIN);
+        $sam = $this->createUser('sam', User::ROLE_STAFF);
+        $entry = $this->movementBy($sam, 'Sams');
+        $productId = $entry->getProduct()->getId();
+        $id = $entry->getId();
+
+        $this->logIn('boss');
+        $this->deleteLog($id);
+        self::assertResponseRedirects('/logs');
+        $this->em->clear();
+        self::assertNull($this->em->find(StockMovement::class, $id));
+        self::assertSame(5, $this->qty($productId, 'M'));
+    }
+
+    public function testDeleteRejectsBadCsrf(): void
+    {
+        $sam = $this->createUser('sam', User::ROLE_STAFF);
+        $id = $this->movementBy($sam)->getId();
+
+        $this->logIn('sam');
+        $this->client->request('POST', '/logs/'.$id.'/delete', ['csrf_token' => 'nope']);
+        self::assertResponseRedirects('/logs');
+        $this->em->clear();
+        self::assertNotNull($this->em->find(StockMovement::class, $id));
+    }
+
+    public function testOwnerCanEditAllDetailsOfALogEntryWithoutTouchingStock(): void
+    {
+        $sam = $this->createUser('sam', User::ROLE_STAFF);
+        $entry = $this->movementBy($sam, 'Mine'); // +5: 5 -> 10, size M
+        $id = $entry->getId();
+        $productId = $entry->getProduct()->getId();
+
+        $this->logIn('sam');
+        $crawler = $this->client->request('GET', '/logs/'.$id.'/edit');
+        $this->client->submit($crawler->selectButton('Save')->form([
+            'log_entry_form[type]' => 'remove',
+            'log_entry_form[size]' => 'L',
+            'log_entry_form[quantity]' => 3,
+            'log_entry_form[note]' => 'Damaged in transit',
+        ]));
+        self::assertResponseRedirects('/logs');
+
+        $this->em->clear();
+        $m = $this->em->find(StockMovement::class, $id);
+        self::assertSame([StockMovement::TYPE_REMOVE, 'L', 3, 5, 2, 'Damaged in transit'], [$m->getType(), $m->getSize(), $m->getQuantity(), $m->getQuantityBefore(), $m->getQuantityAfter(), $m->getNote()]);
+        self::assertSame(5, $this->qty($productId, 'M'), 'real stock is untouched');
+    }
+
+    public function testLogEntryEditRejectsInvalidValues(): void
+    {
+        $sam = $this->createUser('sam', User::ROLE_STAFF);
+        $id = $this->movementBy($sam)->getId(); // before = 5
+
+        $this->logIn('sam');
+        $crawler = $this->client->request('GET', '/logs/'.$id.'/edit');
+        $this->client->submit($crawler->selectButton('Save')->form(['log_entry_form[type]' => 'remove', 'log_entry_form[quantity]' => 99]));
+        self::assertResponseStatusCodeSame(422);
+        self::assertSelectorTextContains('.panel-field-error', 'cannot remove more than');
+
+        $crawler = $this->client->request('GET', '/logs/'.$id.'/edit');
+        $this->client->submit($crawler->selectButton('Save')->form(['log_entry_form[quantity]' => 0]));
+        self::assertResponseStatusCodeSame(422);
+
+        $this->em->clear();
+        self::assertSame(5, $this->em->find(StockMovement::class, $id)->getQuantity());
     }
 }

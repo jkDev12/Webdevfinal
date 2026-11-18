@@ -1,0 +1,27 @@
+{% extends 'panel/base.html.twig' %}
+
+{% block title %}Edit Order #{{ order.id }} — John Kharl Caburog Apparel{% endblock %}
+
+{% block content %}
+    <h2 class="admin-section-title">Edit Order #{{ order.id }}</h2>
+    <p class="panel-hint">
+        {{ order.quantity }} × {{ order.product.name }} ({{ order.size }}) placed by {{ order.user.username }}
+        on {{ order.createdAt|date('Y-m-d H:i:s') }}. Product, size, quantity and payment can't be changed here.
+    </p>
+
+    {% include 'partials/form/_global_errors.html.twig' with {form: form} %}
+
+    {{ form_start(form, {attr: {class: 'stock-form panel-form'}}) }}
+        {% include 'partials/form/_field.html.twig' with {field: form.shippingName} %}
+        {% include 'partials/form/_field.html.twig' with {field: form.shippingPhone} %}
+        {% include 'partials/form/_field.html.twig' with {field: form.shippingAddress} %}
+        {% include 'partials/form/_field.html.twig' with {field: form.shippingCity} %}
+        {% include 'partials/form/_field.html.twig' with {field: form.shippingPostalCode} %}
+        {% include 'partials/form/_field.html.twig' with {field: form.receiptEmail} %}
+
+        <div class="panel-actions">
+            <button type="submit" class="stock-form-submit">Save</button>
+            <a class="panel-link" href="{{ is_granted('ROLE_ADMIN') ? path('app_admin_dashboard') : path('app_account') }}">Cancel</a>
+        </div>
+    {{ form_end(form) }}
+{% endblock %}

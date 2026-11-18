@@ -34,6 +34,9 @@
                 <td>{{ order.receiptEmail }}</td>
                 <td>{{ order.createdAt|date('Y-m-d H:i:s') }}</td>
                 <td class="order-actions">
+                    {% if is_granted('ORDER_EDIT', order) %}
+                        <a class="mark-paid-btn panel-action-link" href="{{ path('app_order_edit', {id: order.id}) }}">Edit</a>
+                    {% endif %}
                     {% if not isCancelled and not isPaid %}
                         <form method="post" class="mark-paid-form" action="{{ path('app_admin_order_paid', {id: order.id}) }}">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token('dashboard') }}">

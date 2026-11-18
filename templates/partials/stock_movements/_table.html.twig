@@ -22,9 +22,15 @@
                 <td data-label="Actions" class="panel-actions">
                     {% if is_granted('LOG_EDIT', m) %}
                         <a class="mark-paid-btn panel-action-link" href="{{ path('app_log_edit', {id: m.id}) }}">Edit</a>
-                    {% else %}
-                        <span class="panel-hint">View only</span>
                     {% endif %}
+                    {% if is_granted('LOG_DELETE', m) %}
+                        <form method="post" class="cancel-order-form" action="{{ path('app_log_delete', {id: m.id}) }}"
+                              onsubmit="return confirm('Delete log entry #{{ m.id }}? This cannot be undone. Stock levels are not changed.');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token('delete_log_' ~ m.id) }}">
+                            <button type="submit" class="cancel-order-btn">Delete</button>
+                        </form>
+                    {% endif %}
+                    {% if not is_granted('LOG_EDIT', m) and not is_granted('LOG_DELETE', m) %}<span class="panel-hint">View only</span>{% endif %}
                 </td>
             </tr>
         {% else %}

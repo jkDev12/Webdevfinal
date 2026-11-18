@@ -103,6 +103,21 @@ class StockMovement
         return $m;
     }
 
+    /**
+     * Correct the details of this history row. "Before" stays as recorded, "after" is recalculated.
+     * This never touches the product's real stock level.
+     */
+    public function revise(string $size, string $type, int $quantity, ?string $note): static
+    {
+        $this->size = $size;
+        $this->type = $type;
+        $this->quantity = $quantity;
+        $this->quantityAfter = self::TYPE_ADD === $type ? $this->quantityBefore + $quantity : $this->quantityBefore - $quantity;
+        $this->note = $note;
+
+        return $this;
+    }
+
     public function getId(): ?int { return $this->id; }
     public function getProduct(): ?Product { return $this->product; }
     public function getProductName(): string { return $this->productName; }
