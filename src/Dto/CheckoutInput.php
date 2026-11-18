@@ -12,6 +12,8 @@ final class CheckoutInput
         public readonly string $shippingName = '',
 
         #[Assert\NotBlank(message: 'Phone number is required.')]
+        #[Assert\Regex(pattern: '/^\d+$/', message: 'Phone number can only contain numbers.')]
+        #[Assert\Length(min: 7, max: 15, minMessage: 'Phone number is too short.', maxMessage: 'Phone number is too long.')]
         public readonly string $shippingPhone = '',
 
         #[Assert\NotBlank(message: 'Street address is required.')]
@@ -21,6 +23,8 @@ final class CheckoutInput
         public readonly string $shippingCity = '',
 
         #[Assert\NotBlank(message: 'Postal code is required.')]
+        #[Assert\Regex(pattern: '/^\d+$/', message: 'Postal code can only contain numbers.')]
+        #[Assert\Length(min: 3, max: 10, minMessage: 'Postal code is too short.', maxMessage: 'Postal code is too long.')]
         public readonly string $shippingPostalCode = '',
 
         #[Assert\Choice(choices: [Order::PAYMENT_COD, Order::PAYMENT_CARD], message: 'Choose a payment method.')]

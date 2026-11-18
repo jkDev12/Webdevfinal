@@ -21,7 +21,7 @@ final class AdminTest extends StoreTestCase
         self::assertResponseStatusCodeSame(403);
     }
 
-    public function testDashboardShowsStockTableAndForms(): void
+    public function testDashboardShowsStockTableWithoutStockForms(): void
     {
         $this->createProduct('Gray Hoodie', ['M' => 2, 'S' => 7]);
         $this->createUser('boss', 'admin');
@@ -32,7 +32,7 @@ final class AdminTest extends StoreTestCase
         self::assertSelectorTextContains('.admin-table', 'Gray Hoodie');
         self::assertSelectorExists('td.stock-low');
         self::assertSelectorExists('td.stock-out');
-        self::assertSelectorCount(2, 'form.stock-form');
+        self::assertSelectorNotExists('form.stock-form');
         self::assertSelectorTextContains('.stat-grid', 'Total users');
         self::assertSelectorTextContains('.stat-grid', 'Total staff');
         self::assertSelectorTextContains('.stat-grid', 'Total records');
@@ -44,13 +44,13 @@ final class AdminTest extends StoreTestCase
         $this->createUser('boss', 'admin');
         $this->logIn('boss');
 
-        $crawler = $this->adminPage();
+        $crawler = $this->client->request('GET', '/products/stock');
         $this->client->submit($crawler->selectButton('Add Stock')->form(['product_id' => $product->getId(), 'size' => 'M', 'quantity' => 10]));
-        self::assertResponseRedirects('/admin');
+        self::assertResponseRedirects('/products/stock');
         $this->client->followRedirect();
-        self::assertSelectorTextContains('.admin-success', 'Added 10 unit(s) of size M.');
+        self::assertSelectorTextContains('.admin-success', 'Added 10 unit(s) of size M');
 
-        $crawler = $this->adminPage();
+        $crawler = $this->client->request('GET', '/products/stock');
         $this->client->submit($crawler->selectButton('Reduce Stock')->form(['product_id' => $product->getId(), 'size' => 'M', 'quantity' => 500]));
         $this->client->followRedirect();
 

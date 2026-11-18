@@ -65,14 +65,14 @@ final class ProductController extends AbstractController
 
     #[Route('/{id<\d+>}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
     #[IsGranted(ProductVoter::EDIT, 'product', 'You can only edit records you created.')]
-    public function edit(Product $product, Request $request, ProductManager $manager): Response
+    public function edit(Product $product, Request $request, ProductManager $manager, #[CurrentUser] User $me): Response
     {
         $form = $this->createForm(ProductFormType::class, ProductData::fromProduct($product));
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $manager->update($product, $form->getData());
+                $manager->update($product, $form->getData(), $me);
                 $this->addFlash('success', sprintf('Updated "%s".', $product->getName()));
 
                 return $this->redirectToRoute('app_product_index');

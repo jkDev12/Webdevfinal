@@ -123,4 +123,19 @@ final class CheckoutTest extends StoreTestCase
         $this->post($this->payload($product->getId(), 'wrong'));
         self::assertResponseStatusCodeSame(403);
     }
+
+    public function testPhoneAndPostalCodeMustBeNumbers(): void
+    {
+        $product = $this->createProduct('Gray Hoodie', ['M' => 2]);
+        $this->createUser('ana');
+        $this->logIn('ana');
+
+        $data = $this->post($this->payload($product->getId(), $this->storefrontToken(), ['shipping_phone' => '0917abc4567']));
+        self::assertFalse($data['success']);
+        self::assertStringContainsString('only contain numbers', $data['message']);
+
+        $data = $this->post($this->payload($product->getId(), $this->storefrontToken(), ['shipping_postal_code' => '10A0']));
+        self::assertFalse($data['success']);
+        self::assertStringContainsString('only contain numbers', $data['message']);
+    }
 }

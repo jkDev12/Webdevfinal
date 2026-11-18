@@ -37,6 +37,7 @@ security:
         - { path: ^/checkout$, roles: PUBLIC_ACCESS }
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/products, roles: ROLE_STAFF }
+        - { path: ^/logs, roles: ROLE_STAFF }
         - { path: ^/, roles: ROLE_USER }
 
 when@test:

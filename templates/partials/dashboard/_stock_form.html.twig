@@ -1,6 +1,6 @@
 <h2 class="admin-section-title">{{ title }}</h2>
 <form method="post" class="stock-form" action="{{ form_action }}">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token('dashboard') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token(csrf_id|default('dashboard')) }}">
 
     <div class="stock-form-field">
         <label for="{{ action }}_product_id">Product</label>

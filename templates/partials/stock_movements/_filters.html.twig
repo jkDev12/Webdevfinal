@@ -1,0 +1,44 @@
+<div class="panel-toolbar">
+    <form method="get" action="{{ path('app_log_index') }}" class="panel-filter">
+        <div class="stock-form-field">
+            <label for="mv_q">Search</label>
+            <input type="search" id="mv_q" name="q" value="{{ filters.q }}" placeholder="Product or username">
+        </div>
+        <div class="stock-form-field">
+            <label for="mv_type">Action</label>
+            <select id="mv_type" name="type">
+                <option value="">Posted &amp; removed</option>
+                <option value="add" {{ filters.type == 'add' ? 'selected' : '' }}>Posted (added)</option>
+                <option value="remove" {{ filters.type == 'remove' ? 'selected' : '' }}>Removed</option>
+            </select>
+        </div>
+        <div class="stock-form-field">
+            <label for="mv_size">Size</label>
+            <select id="mv_size" name="size">
+                <option value="">Any</option>
+                {% for size in sizes %}<option value="{{ size }}" {{ filters.size == size ? 'selected' : '' }}>{{ size }}</option>{% endfor %}
+            </select>
+        </div>
+        <div class="stock-form-field">
+            <label for="mv_by">By</label>
+            <select id="mv_by" name="by">
+                <option value="">Everyone</option>
+                {% for actor in actors %}
+                    <option value="{{ actor.id }}" {{ filters.by == (actor.id ~ '') ? 'selected' : '' }}>{{ actor.username }} ({{ actor.role }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="stock-form-field">
+            <label for="mv_from">From</label>
+            <input type="date" id="mv_from" name="from" value="{{ filters.from }}">
+        </div>
+        <div class="stock-form-field">
+            <label for="mv_to">To</label>
+            <input type="date" id="mv_to" name="to" value="{{ filters.to }}">
+        </div>
+        <button type="submit" class="stock-form-submit">Filter</button>
+        {% if filters.q or filters.type or filters.size or filters.by or filters.from or filters.to %}
+            <a class="panel-link" href="{{ path('app_log_index') }}">Clear</a>
+        {% endif %}
+    </form>
+</div>

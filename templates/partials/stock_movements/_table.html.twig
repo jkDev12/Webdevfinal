@@ -1,0 +1,36 @@
+<div class="table-scroll">
+<table class="admin-table responsive-table">
+    <thead>
+        <tr>
+            <th>When</th><th>Product</th><th>Size</th><th>Action</th><th>Qty</th><th>Stock</th><th>By</th><th>Source</th><th>Note</th><th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for m in movements %}
+            <tr>
+                <td data-label="When">{{ m.createdAt|date('Y-m-d H:i:s') }}</td>
+                <td data-label="Product">{{ m.productName }}{% if not m.product %} <span class="panel-hint">(deleted)</span>{% endif %}</td>
+                <td data-label="Size">{{ m.size }}</td>
+                <td data-label="Action">
+                    <span class="status-badge {{ m.add ? 'active' : 'cancelled' }}">{{ m.add ? 'Posted' : 'Removed' }}</span>
+                </td>
+                <td data-label="Qty">{{ m.add ? '+' : '−' }}{{ m.quantity }}</td>
+                <td data-label="Stock">{{ m.quantityBefore }} → {{ m.quantityAfter }}</td>
+                <td data-label="By">{{ m.actorName }} <span class="role-badge {{ m.actorRole }}">{{ m.actorRole }}</span></td>
+                <td data-label="Source">{{ m.sourceLabel }}</td>
+                <td data-label="Note">{{ m.note ?? '—' }}</td>
+                <td data-label="Actions" class="panel-actions">
+                    {% if is_granted('LOG_EDIT', m) %}
+                        <a class="mark-paid-btn panel-action-link" href="{{ path('app_log_edit', {id: m.id}) }}">Edit</a>
+                    {% else %}
+                        <span class="panel-hint">View only</span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="10">No stock records match.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+<p class="panel-count">{{ movements|length }} record(s) shown{% if movements|length >= 200 %} (latest 200 — narrow the filters to see older ones){% endif %}</p>

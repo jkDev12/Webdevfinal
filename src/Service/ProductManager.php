@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Dto\ProductData;
 use App\Entity\Product;
 use App\Entity\ProductStock;
+use App\Entity\StockMovement;
 use App\Entity\User;
 use App\Exception\StoreException;
 use App\Repository\OrderRepository;
@@ -20,6 +21,7 @@ final class ProductManager
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly OrderRepository $orders,
+        private readonly StockService $stockLog,
         private readonly Filesystem $filesystem,
         #[Autowire('%kernel.project_dir%/public/uploads/products')]
         private readonly string $uploadDir,
@@ -39,7 +41,9 @@ final class ProductManager
                 ->setCreatedBy($owner);
 
             foreach (ProductStock::SIZES as $size) {
-                $product->addStock((new ProductStock())->setSize($size)->setQuantity(max((int) ($data->stock[$size] ?? 0), 0)));
+                $quantity = max((int) ($data->stock[$size] ?? 0), 0);
+                $product->addStock((new ProductStock())->setSize($size)->setQuantity($quantity));
+                $this->stockLog->record($product, $size, 0, $quantity, $owner, StockMovement::SOURCE_PRODUCT_CREATED);
             }
 
             $this->em->persist($product);
@@ -53,7 +57,7 @@ final class ProductManager
         }
     }
 
-    public function update(Product $product, ProductData $data): void
+    public function update(Product $product, ProductData $data, User $actor): void
     {
         $oldImage = $product->getImage();
         $newImage = $data->image ? $this->storeImage($data->image, (string) $data->name) : null;
@@ -69,12 +73,14 @@ final class ProductManager
                 $found = false;
                 foreach ($product->getStocks() as $row) {
                     if ($row->getSize() === $size) {
+                        $this->stockLog->record($product, $size, $row->getQuantity(), $quantity, $actor, StockMovement::SOURCE_PRODUCT_EDIT);
                         $row->setQuantity($quantity);
                         $found = true;
                     }
                 }
                 if (!$found) {
                     $product->addStock((new ProductStock())->setSize($size)->setQuantity($quantity));
+                    $this->stockLog->record($product, $size, 0, $quantity, $actor, StockMovement::SOURCE_PRODUCT_EDIT);
                 }
             }
 

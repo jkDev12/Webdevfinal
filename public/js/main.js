@@ -53,8 +53,9 @@
         var filled = function (el) { return el && el.value.trim() !== ''; };
 
         var ok = !!selectedSize
-            && filled(shipName) && filled(shipPhone) && filled(shipAddress)
-            && filled(shipCity) && filled(shipPostal);
+            && filled(shipName) && filled(shipAddress) && filled(shipCity)
+            && /^\d{7,15}$/.test(shipPhone ? shipPhone.value.trim() : '')
+            && /^\d{3,10}$/.test(shipPostal ? shipPostal.value.trim() : '');
 
         if (currentPaymentMethod() === 'credit_card') {
             var digits = cardNumber ? cardNumber.value.replace(/\D/g, '') : '';
@@ -98,6 +99,14 @@
             if (otherEmail) { otherEmail.hidden = currentReceiptTarget() !== 'other'; }
             updateCheckoutAvailability();
         });
+    });
+
+    [shipPhone, shipPostal].forEach(function (el) {
+        if (el) {
+            el.addEventListener('input', function () {
+                el.value = el.value.replace(/\D/g, '');
+            });
+        }
     });
 
     [shipName, shipPhone, shipAddress, shipCity, shipPostal,

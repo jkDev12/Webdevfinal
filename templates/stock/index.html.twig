@@ -1,0 +1,28 @@
+{% extends 'panel/base.html.twig' %}
+
+{% block title %}Update Stock — John Kharl Caburog Apparel{% endblock %}
+
+{% block content %}
+    {% include 'partials/dashboard/_stock_table.html.twig' %}
+
+    {% include 'partials/dashboard/_stock_form.html.twig' with {
+        title: 'Add Stock',
+        action: 'add_stock',
+        form_action: path('app_staff_stock_add'),
+        csrf_id: 'staff_stock',
+        quantity_label: 'Quantity to add',
+        default_qty: 10,
+        button_label: 'Add Stock'
+    } %}
+
+    {% include 'partials/dashboard/_stock_form.html.twig' with {
+        title: 'Reduce Stock',
+        action: 'reduce_stock',
+        form_action: path('app_staff_stock_reduce'),
+        csrf_id: 'staff_stock',
+        quantity_label: 'Quantity to remove',
+        default_qty: 1,
+        button_label: 'Reduce Stock',
+        remove: true
+    } %}
+{% endblock %}

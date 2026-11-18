@@ -1,0 +1,23 @@
+{% extends 'panel/base.html.twig' %}
+
+{% block title %}Edit Log Entry — John Kharl Caburog Apparel{% endblock %}
+
+{% block content %}
+    <h2 class="admin-section-title">Edit Log Entry #{{ movement.id }}</h2>
+    <p class="panel-hint">
+        {{ movement.add ? 'Posted' : 'Removed' }} {{ movement.quantity }} × {{ movement.size }} of “{{ movement.productName }}”
+        ({{ movement.quantityBefore }} → {{ movement.quantityAfter }}) by {{ movement.actorName }}
+        on {{ movement.createdAt|date('Y-m-d H:i:s') }}. The note is the only part that can be changed.
+    </p>
+
+    {% include 'partials/form/_global_errors.html.twig' with {form: form} %}
+
+    {{ form_start(form, {attr: {class: 'stock-form panel-form'}}) }}
+        {% include 'partials/form/_field.html.twig' with {field: form.note} %}
+
+        <div class="panel-actions">
+            <button type="submit" class="stock-form-submit">Save</button>
+            <a class="panel-link" href="{{ path('app_log_index') }}">Cancel</a>
+        </div>
+    {{ form_end(form) }}
+{% endblock %}
